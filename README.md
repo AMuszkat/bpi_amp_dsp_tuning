@@ -1,9 +1,6 @@
 # bpi_amp_dsp_tuning
 
-Measure a loudspeaker's free-field response in an ordinary room, design correction and
-crossover filters from it, and run those filters on an embedded ARM64 board as LV2 plugins.
-
-The repository has two halves that meet at a pair of generated C++ headers:
+A set of simple audio DSP tools, consisting of loudspeaker measurement/tuning gui tools and audio plugins to complement the [BPI AMP PLATFORM](https://github.com/AMuszkat/bpi_amp_platform)
 
 ```
  python_dsp_tools/                                            juce_plugins/
@@ -16,7 +13,7 @@ The repository has two halves that meet at a pair of generated C++ headers:
 ```
 
 1. **Measure.** The measurement GUI plays a sine sweep and records the woofer close to the cone
-   (near field), the woofer at a distance (far field) and the tweeter. It gates each response
+   (near field), the woofer at a distance (far field) and the tweeter.(Implements the well-known near field measurement technique by Keele.) It gates each response
    in time and splices near and far field together. The result is an estimate of the anechoic
    response down to low frequencies, which a single in-room measurement can't give you.
    [How the method works](docs/near-field-method.md).
@@ -25,6 +22,27 @@ The repository has two halves that meet at a pair of generated C++ headers:
    the coefficients as C++ headers.
 3. **Run.** The JUCE plugins compile those headers in. They are cross-compiled in a Podman
    container for Debian ARM64 and deployed over ssh.
+
+## Screenshots
+
+<table>
+  <tr valign="top">
+    <td width="50%"><img src="docs/images/measurement-gui.png" alt="Near-field measurement GUI"></td>
+    <td width="50%"><img src="docs/images/tuning-gui.png" alt="Tuning GUI"></td>
+  </tr>
+  <tr valign="top">
+    <td><b>Measurement GUI:</b> gated impulse responses and the spliced near/far-field woofer and tweeter response.</td>
+    <td><b>Tuning GUI:</b> driver responses, crossover sum and corrected output, with every filter parameter live.</td>
+  </tr>
+  <tr valign="top">
+    <td><img src="docs/images/ampscope.png" alt="ampScope plugin"></td>
+    <td><img src="docs/images/loudness.png" alt="loudness plugin"></td>
+  </tr>
+  <tr valign="top">
+    <td><b>ampScope plugin:</b> oscilloscope for the amplifier's own voltage, current and supply telemetry.</td>
+    <td><b>loudness plugin:</b> level-dependent loudness contour, two low-shelf EQs per setting.</td>
+  </tr>
+</table>
 
 ## Repository map
 
@@ -37,7 +55,7 @@ The repository has two halves that meet at a pair of generated C++ headers:
 | ├─ [`scripts/`](python_dsp_tools/scripts/README.md) | The original command-line scripts the GUIs grew out of |
 | └─ `examples/` | A sample woofer/tweeter measurement to try the tuning GUI with |
 | [`juce_plugins/`](juce_plugins/README.md) | JUCE/C++ LV2 plugins, their shared build system and the JUCE submodule |
-| `docs/` | [The near-field method](docs/near-field-method.md) and a JUCE [knowledge base](docs/juce-knowledge/) |
+| `docs/` | [The near-field method](docs/near-field-method.md), a JUCE [knowledge base](docs/juce-knowledge/) and the screenshots above (`images/`) |
 | `config/` | `local.env.example`, the template for machine-specific settings |
 
 ## Quick start
