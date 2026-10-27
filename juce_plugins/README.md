@@ -135,6 +135,36 @@ The folder name is the target, product, binary and URI name. The LV2 URI becomes
 `<SPEAKER_LV2_URI_BASE>/myPlugin`, which is unique by construction. Hosts key their plugin
 database on that URI, so two plugins sharing one collide and only one survives a scan.
 
+## Control and headless builds
+
+For the remote plugin host (controller app plus headless speakers, see
+`docs/remote-plugin-host.md` in bpi_amp_platform) a plugin can also be built without its DSP
+and without its editor. List the sources by role and name the targets:
+
+```cmake
+speaker_add_plugin(loudness
+    CODE    Loud
+    INPUTS  1
+    OUTPUTS 1
+    SOURCES PluginProcessor.cpp                        # parameters, state: every target
+    DSP     LoudnessDsp.cpp                            # left out of the control build
+    EDITOR  PluginEditor.cpp MorphPad.cpp HostWindowTracker.cpp   # left out of the headless build
+    MODULES juce_dsp
+    TARGETS complete control headless)
+```
+
+| Target | CMake target | Contains | Runs in |
+|---|---|---|---|
+| complete | `loudness` | everything, as before | the desktop plugin host, tuning |
+| control | `loudness_control` | parameters and editor, no DSP | the controller app |
+| headless | `loudness_headless` | parameters and DSP, no editor | `speakerd` on the speaker |
+
+The sources see `SPEAKER_COMPLETE`, `SPEAKER_CONTROL` and `SPEAKER_HEADLESS` (0 or 1). The
+control build must still define `prepareToPlay`, `reset` and `processBlock`, as empty stubs;
+the headless build's `hasEditor()` returns false. `tools/build-podman.sh` keeps building the
+complete target only. [`../juce_apps/plugin-check`](../juce_apps/plugin-check/README.md)
+checks that the three builds fit together. So far `loudness` is split this way.
+
 ## JUCE
 
 `JUCE/` is pinned to the commit these plugins compile against. When you need to know what

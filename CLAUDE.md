@@ -17,6 +17,7 @@ correction filters against it, and run them as JUCE LV2 plugins on an ARM64 boar
 | `python_dsp_tools/nearfield/` | shared package: `lib.py` (all DSP), `config.py` (local settings) | `python_dsp_tools/README.md` |
 | `python_dsp_tools/scripts/` | original CLI drivers (`analysis.py`, `near_field_ir.py`, …) | its README |
 | `juce_plugins/` | `crossover`, `firConv`, `loudness`, `ampScope` + shared build in `tools/`, `cmake/` | `juce_plugins/README.md`, one per plugin |
+| `juce_apps/plugin-check/` | checks that a plugin's complete, control and headless builds fit together | its README |
 | `docs/near-field-method.md` | the measurement theory | |
 | `docs/juce-knowledge/` | hard-won JUCE findings, read by the `/juce` skill | |
 | `config/local.env.example` | template for machine-specific settings | |
