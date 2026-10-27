@@ -76,7 +76,7 @@ echo "=== Running plugin-check"
 REPORT="$BUILD_DIR/$PLUGIN-report.txt"
 set +e
 "$BUILD_DIR/plugin-check/plugin-check_artefacts/Release/plugin-check" "${args[@]}" 2>&1 \
-    | grep -v 'attempt to map invalid URI' | tee "$REPORT" &
+    | grep --line-buffered -v 'attempt to map invalid URI' | tee "$REPORT" &
 CHECK=$!
 
 # Screenshot the control editor while it is up, when ImageMagick is there.
